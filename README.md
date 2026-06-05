@@ -50,10 +50,11 @@ Before a real run, edit only the active `npts`, `spacing`, and `gridcenter` valu
 
 ## Repository boundary
 
-This repository tracks only the Python/Bash workflow, documentation, and small test inputs. It intentionally does not commit:
+This repository tracks only the Python/Bash workflow and documentation. Local test inputs are ignored by Git. It intentionally does not commit:
 
 - local installed binaries: `bin/`
 - downloaded release/cache files: `downloads/`
+- local test inputs: `test/`
 - runtime logs and docking outputs
 - OMX / local agent state
 

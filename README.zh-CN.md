@@ -50,10 +50,11 @@ gridcenter 54.809 59.493 30.181 # xyz-coordinates or auto
 
 ## 仓库内容边界
 
-本仓库只跟踪 Python/Bash 工作流、文档和小型测试输入。以下内容故意不提交到 GitHub：
+本仓库只跟踪 Python/Bash 工作流和文档。本地测试输入也会被 Git 忽略。以下内容故意不提交到 GitHub：
 
 - 本机安装的二进制文件：`bin/`
 - 下载缓存：`downloads/`
+- 本地测试输入：`test/`
 - 运行日志和 docking 输出
 - OMX / 本地代理状态
 

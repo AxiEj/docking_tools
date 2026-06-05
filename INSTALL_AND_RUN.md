@@ -195,16 +195,16 @@ gridcenter 54.809 59.493 30.181 # xyz-coordinates or auto
 
 Before a real docking run, replace the active AutoDock Grid values: `npts`, `spacing`, and `gridcenter`. Leave the commented Vina/LeDock examples alone unless you deliberately switch formats.
 
-## 7. Run the bundled smoke test
+## 7. Optional smoke test with your own files
 
-The full run uses GPU and may take time, but this is the validation command used for the workflow shape:
+The repository does not upload `test/`; local test inputs and run outputs are intentionally ignored. If you have local receptor/ligand/box files, use a small run like this to validate the installation:
 
 ```bash
 dock \
-  test/fixed_noligand.pdb \
-  test/ligand_954_A501.mol2 \
-  test/box.txt \
-  -o test/script_smoke_run \
+  /path/to/receptor.pdb \
+  /path/to/ligand.mol2 \
+  /path/to/box.txt \
+  -o /path/to/smoke_run \
   --force \
   --nrun 5 \
   --npdb 0 \
@@ -215,11 +215,11 @@ dock \
 Expected important outputs:
 
 ```text
-test/script_smoke_run/SUMMARY.md
-test/script_smoke_run/prep/receptor.maps.fld
-test/script_smoke_run/adgpu/ligand_adgpu.dlg
-test/script_smoke_run/adgpu/ligand_adgpu-best.pdbqt
-test/script_smoke_run/gnina/dlg_run_best_clean/*_by_cnnscore.tsv
+/path/to/smoke_run/SUMMARY.md
+/path/to/smoke_run/prep/receptor.maps.fld
+/path/to/smoke_run/adgpu/ligand_adgpu.dlg
+/path/to/smoke_run/adgpu/ligand_adgpu-best.pdbqt
+/path/to/smoke_run/gnina/dlg_run_best_clean/*_by_cnnscore.tsv
 ```
 
 Run outputs are ignored by Git.

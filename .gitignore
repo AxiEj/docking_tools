@@ -10,11 +10,10 @@ logs/
 __pycache__/
 *.py[cod]
 
+# Local test inputs and docking run outputs.
+test/
+
 # Docking run outputs / smoke artifacts.
-test/docking/
-test/run_adgpu_gnina/
-test/script_*_run/
-test/*.console.log
 adgpu_gnina_*/
 
 # Windows/WSL metadata.

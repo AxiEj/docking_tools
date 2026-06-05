@@ -197,17 +197,16 @@ gnina/dlg_run_best_clean/*_by_cnnscore.tsv
 8. 自动拆 AD_GPU DLG 的每个 run-best pose，并清理 `MODEL/ENDMDL/TER` 以适配 gnina。
 9. gnina scoring 某个 pose 失败时记录 error，不直接吞掉日志。
 
-## 已通过烟测
+## 烟测说明
 
-测试命令：
+`test/` 本地测试输入不上传 GitHub，已加入 `.gitignore`。如果你本地有 receptor/ligand/box 文件，可以用小参数先验证安装：
 
 ```bash
-cd /home/axie/docking_tools
-./run_adgpu_gnina.sh \
-  test/fixed_noligand.pdb \
-  test/ligand_954_A501.mol2 \
-  test/box.txt \
-  -o test/script_smoke_run \
+dock \
+  /path/to/receptor.pdb \
+  /path/to/ligand.mol2 \
+  /path/to/box.txt \
+  -o /path/to/smoke_run \
   --force \
   --nrun 5 \
   --npdb 0 \
@@ -215,4 +214,4 @@ cd /home/axie/docking_tools
   --rerank-limit all
 ```
 
-验证：maps、DLG、best pose、5 行 gnina rerank 表均已生成。
+验证重点：maps、DLG、best pose、gnina rerank 表是否生成。

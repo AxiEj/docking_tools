@@ -1,1 +1,0 @@
-vina --receptor fixed_noligand.pdbqt --seed 123 --ligand .\lig.pdbqt --exhaustiveness 50 --out out.pdbqt --center_x 20.8 --center_y 11.0 --center_z 22.1 --size_x 23.8 --size_y 15.3 --size_z 16.1 --verbosity 2 >log.txt
