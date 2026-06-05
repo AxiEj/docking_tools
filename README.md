@@ -2,7 +2,9 @@
 
 Local one-step AutoDock-GPU + gnina docking workflow.
 
-See the full guide: [README_ADGPU_GNINA_PIPELINE.md](README_ADGPU_GNINA_PIPELINE.md).
+Start here: [INSTALL_AND_RUN.md](INSTALL_AND_RUN.md).
+
+Pipeline details: [README_ADGPU_GNINA_PIPELINE.md](README_ADGPU_GNINA_PIPELINE.md).
 
 Quick use after installing the local bash alias:
 

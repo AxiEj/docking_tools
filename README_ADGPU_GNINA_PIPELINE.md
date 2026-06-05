@@ -1,5 +1,7 @@
 # AD_GPU + gnina 一键工作流
 
+详细安装/下载 excluded binaries 的步骤见：[INSTALL_AND_RUN.md](INSTALL_AND_RUN.md)。
+
 主脚本：
 
 ```bash
@@ -45,16 +47,18 @@ gnina --help
 `box.txt` 支持优先解析：
 
 ```text
-npts 63 40 43
+npts 49 75 43
 spacing 0.375
-gridcenter 20.813 10.963 22.132
+gridcenter 54.809 59.493 30.181
 ```
 
-如果没有 AutoGrid 格式，也会尝试解析 Vina 的：
+如果没有 AutoGrid 格式，也会尝试解析 PyMOL `getbox sele` 这种 Vina 一行格式：
 
 ```text
 --center_x ... --center_y ... --center_z ... --size_x ... --size_y ... --size_z ...
 ```
+
+也支持 LeDock：`Binding pocket` 后面三行 min/max。
 
 ## 生成 box 模板
 
@@ -64,28 +68,42 @@ gridcenter 20.813 10.963 22.132
 dock box
 ```
 
-默认写出当前目录的 `box.txt`，内容是 AutoDock 风格：
+默认写出当前目录的 `box.txt`。默认只启用 AutoDock Grid 三行；Vina/LeDock/BoxCode 作为注释参考保留，解析器会忽略 `#` 注释：
 
 ```text
+# !!! MUST CHANGE FOR YOUR REAL SYSTEM !!!
+# !!! 下面 AutoDock Grid 三行只是模板默认值；真实对接前必须换成你的口袋参数 !!!
+
 *********AutoDock Grid Option*********
-npts 63 40 43 # num. grid points in xyz
+npts 49 75 43 # num. grid points in xyz
 spacing 0.375 # spacing (A)
-gridcenter 20.813 10.963 22.132 # xyz-coordinates or auto
+gridcenter 54.809 59.493 30.181 # xyz-coordinates or auto
+
+# *********AutoDock Vina Binding Pocket*********
+# --center_x 54.8 --center_y 59.5 --center_z 30.2 --size_x 18.7 --size_y 28.5 --size_z 16.3
+
+# *********LeDock Binding Pocket*********
+# Binding pocket
+# 45.4 64.2
+# 45.2 73.7
+# 22.0 38.3
+
+# BoxCode(box_8332) = showbox 45.4, 64.2, 45.2, 73.7, 22.0, 38.3
 ```
 
 你也可以指定文件名和初始参数：
 
 ```bash
-dock box my_box.txt --center 20.813 10.963 22.132 --npts 63 40 43
+dock box my_box.txt --center 54.809 59.493 30.181 --npts 49 75 43
 ```
 
 如果你只有 Vina 的 size，也可以让模板先自动换算 `npts=ceil(size/spacing)`：
 
 ```bash
-dock box my_box.txt --center 20.813 10.963 22.132 --size 23.8 15.3 16.1
+dock box my_box.txt --center 54.809 59.493 30.181 --size 18.7 28.5 16.3
 ```
 
-之后只需要改模板里的具体数值即可直接用于 `dock receptor.pdb ligand.mol2 box.txt`。
+之后只需要把 AutoDock Grid 的 `npts`、`spacing`、`gridcenter` 换成目标口袋参数，就可以直接用于 `dock receptor.pdb ligand.mol2 box.txt`。
 
 ## 推荐命令
 

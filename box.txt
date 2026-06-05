@@ -1,4 +1,18 @@
+# !!! MUST CHANGE FOR YOUR REAL SYSTEM !!!
+# !!! 下面 AutoDock Grid 三行只是模板默认值；真实对接前必须换成你的口袋参数 !!!
+
 *********AutoDock Grid Option*********
-npts 63 40 43 # num. grid points in xyz
+npts 49 75 43 # num. grid points in xyz
 spacing 0.375 # spacing (A)
-gridcenter 20.813 10.963 22.132 # xyz-coordinates or auto
+gridcenter 54.809 59.493 30.181 # xyz-coordinates or auto
+
+# *********AutoDock Vina Binding Pocket*********
+# --center_x 54.8 --center_y 59.5 --center_z 30.2 --size_x 18.7 --size_y 28.5 --size_z 16.3
+
+# *********LeDock Binding Pocket*********
+# Binding pocket
+# 45.4 64.2
+# 45.2 73.7
+# 22.0 38.3
+
+# BoxCode(box_8332) = showbox 45.4, 64.2, 45.2, 73.7, 22.0, 38.3

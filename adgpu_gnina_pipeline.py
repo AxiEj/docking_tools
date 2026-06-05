@@ -23,6 +23,12 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 ROOT = Path(__file__).resolve().parent
+DEFAULT_BOX_CENTER = (54.809, 59.493, 30.181)
+DEFAULT_BOX_NPTS = (49, 75, 43)
+DEFAULT_BOX_SPACING = 0.375
+DEFAULT_VINA_SIZE = (18.7, 28.5, 16.3)
+DEFAULT_LEDOCK_MINMAX = ((45.4, 64.2), (45.2, 73.7), (22.0, 38.3))
+DEFAULT_BOXCODE = "box_8332"
 
 
 @dataclass
@@ -106,7 +112,8 @@ def parse_floats(pattern: str, text: str, count: int) -> tuple[float, ...] | Non
 
 
 def parse_box(path: Path, default_spacing: float = 0.375) -> Box:
-    text = read_text(path).replace("\r", "")
+    raw_text = read_text(path).replace("\r", "")
+    text = "\n".join(line.split("#", 1)[0] for line in raw_text.splitlines())
     notes: list[str] = []
 
     npts_match = re.search(
@@ -674,13 +681,34 @@ def format_box_template(
     center: tuple[float, float, float],
     npts: tuple[int, int, int],
     spacing: float,
+    size: tuple[float, float, float],
+    boxcode: str = DEFAULT_BOXCODE,
+    ledock_minmax: tuple[tuple[float, float], tuple[float, float], tuple[float, float]] | None = None,
 ) -> str:
+    if ledock_minmax is None:
+        ledock_minmax = tuple(
+            (center[i] - size[i] / 2, center[i] + size[i] / 2) for i in range(3)
+        )
     return textwrap.dedent(
         f"""\
+        # !!! MUST CHANGE FOR YOUR REAL SYSTEM !!!
+        # !!! 下面 AutoDock Grid 三行只是模板默认值；真实对接前必须换成你的口袋参数 !!!
+
         *********AutoDock Grid Option*********
         npts {npts[0]} {npts[1]} {npts[2]} # num. grid points in xyz
         spacing {spacing:g} # spacing (A)
         gridcenter {center[0]:.3f} {center[1]:.3f} {center[2]:.3f} # xyz-coordinates or auto
+
+        # *********AutoDock Vina Binding Pocket*********
+        # --center_x {center[0]:.1f} --center_y {center[1]:.1f} --center_z {center[2]:.1f} --size_x {size[0]:.1f} --size_y {size[1]:.1f} --size_z {size[2]:.1f}
+
+        # *********LeDock Binding Pocket*********
+        # Binding pocket
+        # {ledock_minmax[0][0]:.1f} {ledock_minmax[0][1]:.1f}
+        # {ledock_minmax[1][0]:.1f} {ledock_minmax[1][1]:.1f}
+        # {ledock_minmax[2][0]:.1f} {ledock_minmax[2][1]:.1f}
+
+        # BoxCode({boxcode}) = showbox {ledock_minmax[0][0]:.1f}, {ledock_minmax[0][1]:.1f}, {ledock_minmax[1][0]:.1f}, {ledock_minmax[1][1]:.1f}, {ledock_minmax[2][0]:.1f}, {ledock_minmax[2][1]:.1f}
         """
     )
 
@@ -697,7 +725,7 @@ def build_box_arg_parser() -> argparse.ArgumentParser:
         nargs=3,
         type=float,
         metavar=("X", "Y", "Z"),
-        default=(20.813, 10.963, 22.132),
+        default=DEFAULT_BOX_CENTER,
         help="initial AutoDock gridcenter",
     )
     p.add_argument(
@@ -705,7 +733,7 @@ def build_box_arg_parser() -> argparse.ArgumentParser:
         nargs=3,
         type=int,
         metavar=("X", "Y", "Z"),
-        default=(63, 40, 43),
+        default=DEFAULT_BOX_NPTS,
         help="initial AutoDock grid point counts",
     )
     p.add_argument(
@@ -713,9 +741,11 @@ def build_box_arg_parser() -> argparse.ArgumentParser:
         nargs=3,
         type=float,
         metavar=("X", "Y", "Z"),
-        help="optional Vina-style size in Angstrom; if set, npts=ceil(size/spacing)",
+        default=DEFAULT_VINA_SIZE,
+        help="Vina-style size in Angstrom; if set, npts=ceil(size/spacing)",
     )
-    p.add_argument("--spacing", type=float, default=0.375, help="AutoGrid spacing")
+    p.add_argument("--spacing", type=float, default=DEFAULT_BOX_SPACING, help="AutoGrid spacing")
+    p.add_argument("--boxcode", default=DEFAULT_BOXCODE, help="BoxCode label written in the template")
     p.add_argument("--force", action="store_true", help="overwrite output if it already exists")
     return p
 
@@ -727,10 +757,11 @@ def box_main(argv: Sequence[str]) -> int:
     spacing = args.spacing
     if spacing <= 0:
         parser.error("--spacing must be positive")
-    if args.size:
-        if any(v <= 0 for v in args.size):
-            parser.error("--size values must be positive")
-        npts = tuple(max(1, int(math.ceil(v / spacing))) for v in args.size)
+    size = tuple(args.size)
+    if any(v <= 0 for v in size):
+        parser.error("--size values must be positive")
+    if "--size" in argv:
+        npts = tuple(max(1, int(math.ceil(v / spacing))) for v in size)
     else:
         npts = tuple(args.npts)
     if any(v <= 0 for v in npts):
@@ -740,7 +771,17 @@ def box_main(argv: Sequence[str]) -> int:
     if path.exists() and not args.force:
         parser.error(f"output already exists; use --force to overwrite: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(format_box_template(center, npts, spacing), encoding="utf-8")
+    use_default_ledock = (
+        center == DEFAULT_BOX_CENTER
+        and size == DEFAULT_VINA_SIZE
+        and npts == DEFAULT_BOX_NPTS
+        and spacing == DEFAULT_BOX_SPACING
+    )
+    ledock_minmax = DEFAULT_LEDOCK_MINMAX if use_default_ledock else None
+    path.write_text(
+        format_box_template(center, npts, spacing, size, args.boxcode, ledock_minmax),
+        encoding="utf-8",
+    )
     print(f"Wrote AutoDock box template: {path.resolve()}")
     print(f"Edit npts/spacing/gridcenter, then run: dock receptor.pdb ligand.mol2 {path}")
     return 0
@@ -756,7 +797,7 @@ After installing the bash alias, create an editable box file anywhere with:
 
 Examples:
   dock box
-  dock box my_box.txt --center 20.813 10.963 22.132 --size 23.8 15.3 16.1
+  dock box my_box.txt --center 54.809 59.493 30.181 --size 18.7 28.5 16.3
 
 Extra passthrough quick reference
 =================================
