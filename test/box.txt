@@ -1,0 +1,4 @@
+*********AutoDock Grid Option*********
+npts 63 40 43 # num. grid points in xyz
+spacing 0.375 # spacing (A)
+gridcenter 20.813 10.963 22.132 # xyz-coordinates or auto

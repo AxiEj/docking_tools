@@ -1,0 +1,9 @@
+﻿  ## 用法
+
+  cd /home/axie/docking_tools
+
+  ./run_adgpu_gnina.sh /path/to/receptor.pdb /path/to/ligand.mol2 /home/axie/docking_tools/test/box.txt -o /path/to/output_run --nrun 50 --npdb 20 --rerank-limit all
+
+  想固定随机种子：
+
+  --seed 123

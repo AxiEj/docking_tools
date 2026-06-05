@@ -1,0 +1,21 @@
+# Local installed binaries and downloaded archives are not source files.
+# Install AutoDock-GPU, AutoGrid4, gnina, Meeko, and Open Babel separately.
+bin/
+downloads/
+pkgs/
+
+# Runtime logs, OMX state, and generated caches.
+logs/
+.omx/
+__pycache__/
+*.py[cod]
+
+# Docking run outputs / smoke artifacts.
+test/docking/
+test/run_adgpu_gnina/
+test/script_*_run/
+test/*.console.log
+adgpu_gnina_*/
+
+# Windows/WSL metadata.
+*:Zone.Identifier
