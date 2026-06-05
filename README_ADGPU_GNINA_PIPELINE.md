@@ -1,5 +1,14 @@
 # AD_GPU + gnina 一键工作流
 
+标签：`AutoDock-GPU` · `gnina` · `CNNscore` · `CNN rescoring` · `AutoGrid4` · `Meeko` · `Open Babel` · `molecular docking` · `virtual screening` · `GPU docking`
+
+定位：**AutoDock-GPU 负责快速采样，gnina 负责 CNN 重打分排序**。gnina 1.0 论文报告 CNN scoring 重打分在 redocking / cross-docking 的 Top1 pose-ranking 指标上优于 AutoDock Vina scoring；AutoDock-GPU 论文报告其 GPU/梯度局部搜索实现可显著加速 AutoDock4 类搜索。这个流程利用两者优点，但不宣称所有体系无条件最高精度。
+
+文献：
+
+- McNutt A. T. et al. *GNINA 1.0: molecular docking with deep learning.* Journal of Cheminformatics 13, 43 (2021). DOI: [10.1186/s13321-021-00522-2](https://doi.org/10.1186/s13321-021-00522-2)
+- Santos-Martins D. et al. *Accelerating AutoDock4 with GPUs and Gradient-Based Local Search.* Journal of Chemical Theory and Computation 17, 1060-1073 (2021). DOI: [10.1021/acs.jctc.0c01006](https://doi.org/10.1021/acs.jctc.0c01006)
+
 详细安装/下载 excluded binaries 的步骤见：[INSTALL_AND_RUN.md](INSTALL_AND_RUN.md)。
 
 主脚本：
